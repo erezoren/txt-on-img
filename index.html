@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <style>
+    .container {
+      margin: auto;
+      width: 500px;
+      border: 3px solid green;
+      padding: 10px;
+      direction: rtl;
+    }
+
+    label {
+      display: block;
+      font: 1rem 'Fira Sans', sans-serif;
+    }
+
+    input,
+    label {
+      margin: .4rem 0;
+    }
+
+    #draggable {
+      width: 150px;
+      height: 150px;
+      padding: 0.5em;
+      background: transparent;
+      border-color: transparent;
+      font-size: 20px;
+      color: #000000;
+      position: absolute;
+      margin-top: -100px;
+      left: 43%;
+    }
+
+    /*  .html2canvas-container {
+        width: 3000px;
+        height: 3000px;
+      }*/
+
+
+  </style>
+
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <!-- Include from the CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+    $(function () {
+      $("#draggable").draggable();
+    });
+  </script>
+
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div class="container">
+  <h2>בחר תמונה מהמחשב</h2>
+  <input type='file'/>
+  <button onclick="takeShot();">
+    צור תמונה
+  </button>
+  <h2>הוסף טקסט</h2>
+  <textarea id="ta"></textarea>
+  <label for="fontSize">גודל הפונט</label>
+  <input type="number" id="fontSize" min="20" value="20" style="width: 55px"/>
+
+  <label for="fontColor">צבע הפונט</label>
+  <input type="color" id="fontColor" value="#000000" style="width: 55px"/>
+
+  <div id="html-content-holder">
+    <div id="draggable" class="ui-widget-content">
+      <div class="dcontent" id="dcontent"></div>
+    </div>
+    <div>
+      <img src="https://socialistmodernism.com/wp-content/uploads/2017/07/placeholder-image.png" width="500px"/>
+    </div>
+  </div>
+
+</div>
+
+<div class="container" id="result" name="result">
+  <h1>העתק ושלח:</h1>
+  <div id="output" width="500px"></div>
+</div>
+<script>
+  window.addEventListener('load', function () {
+    document.querySelector('input[type="file"]').addEventListener('change', function () {
+      if (this.files && this.files[0]) {
+        let img = document.querySelector('img');
+        img.src = URL.createObjectURL(this.files[0]); // set src to blob url
+      }
+    });
+  })
+
+  let area = document.querySelector('#ta');
+  bindInputChangeEvent(area, () => {
+    let newValue = area.value
+    newValue = newValue.replace(/(?:\r\n|\r|\n)/g, '<br>');
+    document.querySelector('#draggable').innerHTML = newValue;
+  })
+
+  let fontSize = document.querySelector('#fontSize');
+  bindInputChangeEvent(fontSize, () => {
+    let newValue = fontSize.value
+    document.querySelector('#draggable').style.fontSize = newValue + "px";
+  })
+
+  let fontColor = document.querySelector('#fontColor');
+  bindInputChangeEvent(fontColor, () => {
+    let newValue = fontColor.value;
+    document.querySelector('#draggable').style.color = newValue;
+  })
+
+  function takeShot() {
+    location.hash = "";
+    window.scrollTo(0, -window.scrollY)
+    let div = document.querySelector("#html-content-holder");
+    let options = {
+      allowTaint: true,
+    }
+    html2canvas(div, options).then(canvas => {
+      document.querySelector('#output').appendChild(canvas);
+    }).then(() => {
+      location.hash = "#result";
+    });
+  }
+
+  function bindInputChangeEvent(element, action) {
+    if (element.addEventListener) {
+      element.addEventListener('input', function () {
+        action();
+      }, false);
+    } else if (element.attachEvent) {
+      element.attachEvent('onpropertychange', function () {
+        action();
+      });
+    }
+  }
+
+</script>
+</body>
+</html>
