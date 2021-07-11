@@ -99,6 +99,9 @@
   bindInputChangeEvent(area, () => {
     let newValue = area.value
     newValue = newValue.replace(/(?:\r\n|\r|\n)/g, '<br>');
+    debugger
+    newValue = newValue.replace(/\s/g, '&nbsp;');
+
     document.querySelector('#draggable').innerHTML = newValue;
   })
 
