@@ -33,10 +33,6 @@
       left: 43%;
     }
 
-    /*  .html2canvas-container {
-        width: 3000px;
-        height: 3000px;
-      }*/
 
 
   </style>
@@ -59,6 +55,15 @@
 <div class="container">
   <h2>בחר תמונה מהמחשב</h2>
   <input type='file'/>
+  או מתבניות
+  <select id="presets">
+    <option value="-1">בחר תבנית</option>
+    <option value="./images/imprtant_msg.jpg">הודעה חשובה</option>
+    <option value="./images/managment_meeting.jpg">פגישה עם ההנהלה</option>
+    <option value="./images/new_baby1.jpeg">תינוק חדש1 </option>
+    <option value="./images/new_baby2.jpeg">תינוק חדש 2</option>
+    <option value="./images/new_baby3.jpeg">תינוק חדש 3</option>
+  </select>
   <button onclick="takeShot();">
     צור תמונה
   </button>
@@ -95,13 +100,21 @@
     });
   })
 
+  let presets = document.querySelector('#presets');
+  bindInputChangeEvent(presets, () => {
+    let newValue = presets.value
+    if(newValue=="-1"){
+      return;
+    }
+    let img = document.querySelector('img');
+    img.src = newValue; // set src to blob url
+  })
+
   let area = document.querySelector('#ta');
   bindInputChangeEvent(area, () => {
     let newValue = area.value
     newValue = newValue.replace(/(?:\r\n|\r|\n)/g, '<br>');
-    debugger
     newValue = newValue.replace(/\s/g, '&nbsp;');
-
     document.querySelector('#draggable').innerHTML = newValue;
   })
 
